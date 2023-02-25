@@ -40,10 +40,32 @@ public class EmployeePayRollService {
             System.out.println("Exception - "+ e.getMessage());
         }
     }
-    public static void main(String[] args) {
+
+    public boolean updateUsingPreparedStatement(String query) throws Exception {
+        try {
+            Connection connection =DriverManager.getConnection(url,userName,password);
+            PreparedStatement statement = connection.prepareStatement(query);
+            boolean response = statement.execute();
+            if (response) {
+                ResultSet resultSet = statement.getResultSet();
+                while (resultSet.next())
+                    System.out.println(resultSet.getInt(1)+":"+resultSet.getString(2)+":"+resultSet.getString(3)+":"+resultSet.getDouble(4)+":"+resultSet.getDate(5).toLocalDate()+":"+resultSet.getString(6)+":"+resultSet.getString(7)+":"+resultSet.getString(8)+":"+resultSet.getFloat(9)+":"+resultSet.getFloat(10)+":"+resultSet.getFloat(11)+":"+resultSet.getFloat(12)+":"+resultSet.getFloat(13));
+            } else {
+                int count = statement.getUpdateCount();
+                System.out.println(count);
+            }
+            return response;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+    public static void main(String[] args) throws Exception {
         EmployeePayRollService employeePayRollService = new EmployeePayRollService();
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
         employeePayRollService.updateDatabase("update employee_payroll set salary = 3000000.0 where name = 'Terissa' ");
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
+        employeePayRollService.updateUsingPreparedStatement("update employee_payroll set salary = 3000000.0 where name = 'Terissa'");
+        employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
+
     }
 }
