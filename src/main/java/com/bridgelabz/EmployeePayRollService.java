@@ -87,6 +87,48 @@ public class EmployeePayRollService {
             e.printStackTrace();
         }
     }
+
+    public void sumAvgMinMaxCount() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/payroll_service", "root", "d11cpk1211");
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT " +
+                            "    gender, " +
+                            "    COUNT(*) AS total_employees, " +
+                            "    SUM(salary) AS total_salary, " +
+                            "    AVG(salary) AS average_salary, " +
+                            "    MIN(salary) AS min_salary, " +
+                            "    MAX(salary) AS max_salary " +
+                            "FROM employee_payroll " +
+                            "GROUP BY gender");
+
+            // Execute the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Process the results
+            while (rs.next()) {
+                String gender = rs.getString("gender");
+                double totalEmployees = rs.getDouble("total_employees");
+                double totalSalary = rs.getDouble("total_salary");
+                double averageSalary = rs.getDouble("average_salary");
+                double minimumSalary = rs.getDouble("min_salary");
+                double maximumSalary = rs.getDouble("max_salary");
+
+                // Print the results
+                System.out.println(gender + " Total Employess: " + totalEmployees);
+                System.out.println(gender + " Total Salary: " + totalSalary);
+                System.out.println(gender + " Average  Salary: " + averageSalary);
+                System.out.println(gender + " Minimum Salary: " + minimumSalary);
+                System.out.println(gender + " Maximum Salary: " + maximumSalary);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void main(String[] args) throws Exception {
         EmployeePayRollService employeePayRollService = new EmployeePayRollService();
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
@@ -97,6 +139,7 @@ public class EmployeePayRollService {
         employeePayRollService.getPayrollDataByName("Prasanth");
         employeePayRollService.getPayrollDataByDate();
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
+        employeePayRollService.sumAvgMinMaxCount();
 
     }
 }
