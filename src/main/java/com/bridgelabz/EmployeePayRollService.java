@@ -59,12 +59,43 @@ public class EmployeePayRollService {
             throw new Exception(e.getMessage());
         }
     }
+
+    public void getPayrollDataByName(String name) {
+        try {
+            Connection connection =DriverManager.getConnection(url,userName,password);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM employee_payroll WHERE name = ?");
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt(1)+":"+resultSet.getString(2)+":"+resultSet.getString(3)+":"+resultSet.getDouble(4)+":"+resultSet.getDate(5).toLocalDate()+":"+resultSet.getString(6)+":"+resultSet.getString(7)+":"+resultSet.getString(8)+":"+resultSet.getFloat(9)+":"+resultSet.getFloat(10)+":"+resultSet.getFloat(11)+":"+resultSet.getFloat(12)+":"+resultSet.getFloat(13));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPayrollDataByDate() {
+
+        try {
+            Connection connection =DriverManager.getConnection(url,userName,password);
+            PreparedStatement preparedStatement  = connection.prepareStatement("SELECT * FROM employee_payroll WHERE start between cast('2005-12-11' as date) and cast('2020-12-06' as date)");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt(1)+":"+resultSet.getString(2)+":"+resultSet.getString(3)+":"+resultSet.getDouble(4)+":"+resultSet.getDate(5).toLocalDate()+":"+resultSet.getString(6)+":"+resultSet.getString(7)+":"+resultSet.getString(8)+":"+resultSet.getFloat(9)+":"+resultSet.getFloat(10)+":"+resultSet.getFloat(11)+":"+resultSet.getFloat(12)+":"+resultSet.getFloat(13));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) throws Exception {
         EmployeePayRollService employeePayRollService = new EmployeePayRollService();
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
         employeePayRollService.updateDatabase("update employee_payroll set salary = 3000000.0 where name = 'Terissa' ");
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
         employeePayRollService.updateUsingPreparedStatement("update employee_payroll set salary = 3000000.0 where name = 'Terissa'");
+        employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
+        employeePayRollService.getPayrollDataByName("Prasanth");
+        employeePayRollService.getPayrollDataByDate();
         employeePayRollService.retrieveDataFromDatabase("select * from employee_payroll");
 
     }
