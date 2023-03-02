@@ -16,7 +16,7 @@ public class DatabaseConnection {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service";
         String userName = "root";
         String passWord = "d11cpk1211";
-        Connection con;
+        Connection connection;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.println("Driver loaded");
@@ -25,9 +25,9 @@ public class DatabaseConnection {
         }
         listDrivers();
         try {
-            System.out.println("Connecting to databse : " + jdbcURL);
-            con = DriverManager.getConnection(jdbcURL, userName, passWord);
-            System.out.println("Connection is Successful " + con);
+            System.out.println("Connecting to database : " + jdbcURL);
+            connection = DriverManager.getConnection(jdbcURL, userName, passWord);
+            System.out.println("Connection is Successful " + connection);
         } catch (Exception e) {
             e.printStackTrace();
         }
